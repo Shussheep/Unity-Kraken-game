@@ -149,29 +149,33 @@ public class CamerAndRoomController : MonoBehaviour
                     int num = temp.GetRoomConectedTONorth();
                     roomMarkers[num - 1].GetComponent<Room>().MoveToCenter();
 
-                    //independent is the one that you added the conection number to and dose not change shape when moved
-                    float dependentY = roomMarkers[num - 1].transform.position.y;
-                    float independentY = roomMarker.transform.position.y;
+                   
 
-                    Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                    p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
+                   
                     if (allWallAreSameSize)
+                    {
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
+
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(temp.GetPoint2().transform.position.x, p2.position.y);
+                    }
+                    else if (roomMarkers[num - 1].GetComponent<Room>().GetAncorToRightOrUp())
                     {
                         Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
                         p2.position = new Vector3(temp.GetPoint2().transform.position.x, p2.position.y);
                     }
+                    else 
+                    {
+                        
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
+                    }
 
 
-                    if (dependentY < independentY)
-                    {
-                        p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                        p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
-                    }
-                    else
-                    {
-                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                        p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
-                    }
+                        Transform p2y = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p2y.position = new Vector3(p2y.position.x, temp.GetPoint2().transform.position.y);
+                    
 
                 }
                 if (temp.GetRoomConectedTOEast() != 0)
@@ -183,24 +187,38 @@ public class CamerAndRoomController : MonoBehaviour
                     float dependentX = roomMarkers[num - 1].transform.position.x;
                     float independentX = roomMarker.transform.position.x;
 
-                    Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                    p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
+
                     if (allWallAreSameSize)
+                    {
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
+
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
+                    }
+                    else if (roomMarkers[num - 1].GetComponent<Room>().GetAncorToRightOrUp())
+                    {
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
+                    }
+                    else 
                     {
                         Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
                         p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
                     }
 
 
+
                     if (dependentX < independentX)
                     {
-                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                        p1.position = new Vector3(temp.GetPoint2().transform.position.x, p1.position.y);
+                        //p1x = point 1 minipulated on x
+                        Transform p1x = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1x.position = new Vector3(temp.GetPoint2().transform.position.x, p1x.position.y);
                     }
                     else
                     {
-                        p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                        p2.position = new Vector3(temp.GetPoint1().transform.position.x, p2.position.y);
+                        Transform p2x = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2x.position = new Vector3(temp.GetPoint1().transform.position.x, p2x.position.y);
                     }
                 }
                 if (temp.GetRoomConectedTOSouth() != 0)
@@ -212,22 +230,35 @@ public class CamerAndRoomController : MonoBehaviour
                     float dependentY = roomMarkers[num - 1].transform.position.y;
                     float independentY = roomMarker.transform.position.y;
 
-                    Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                    p2.position = new Vector3(temp.GetPoint2().transform.position.x, p2.position.y);
                     if (allWallAreSameSize)
                     {
                         Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
                         p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
+
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(temp.GetPoint2().transform.position.x, p2.position.y);
                     }
-                    if (dependentY < independentY)
+                    else if (roomMarkers[num - 1].GetComponent<Room>().GetAncorToRightOrUp())
                     {
-                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                        p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(temp.GetPoint2().transform.position.x, p2.position.y);
                     }
                     else
                     {
-                        p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                        p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
+
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
+                    }
+
+                    if (dependentY < independentY)
+                    {
+                        Transform p1y = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p1y.position = new Vector3(p1y.position.x, temp.GetPoint1().transform.position.y);
+                    }
+                    else
+                    {
+                        Transform p2y = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p2y.position = new Vector3(p2y.position.x, temp.GetPoint2().transform.position.y);
                     }
 
                 }
@@ -240,23 +271,37 @@ public class CamerAndRoomController : MonoBehaviour
                     float dependentX = roomMarkers[num - 1].transform.position.x;
                     float independentX = roomMarker.transform.position.x;
 
-                    Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                    p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
+                    //menipulation on the y axis 
+                 
                     if (allWallAreSameSize)
+                    {
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
+
+                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
+                    }
+                    else if (roomMarkers[num - 1].GetComponent<Room>().GetAncorToRightOrUp())
                     {
                         Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
                         p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
                     }
+                    else 
+                    {
+                        Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
+                    }
 
+                    //menipulation on the x axis 
                     if (dependentX < independentX)
                     {
-                        p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
-                        p1.position = new Vector3(temp.GetPoint2().transform.position.x, p1.position.y);
+                         Transform p1x = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
+                        p1x.position = new Vector3(temp.GetPoint2().transform.position.x, p1x.position.y);
                     }
                     else
                     {
-                        Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
-                        p2.position = new Vector3(temp.GetPoint1().transform.position.x, p2.position.y);
+                        Transform p2x = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
+                        p2x.position = new Vector3(temp.GetPoint1().transform.position.x, p2x.position.y);
                     }
                 }
 

@@ -2,20 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 [ExecuteAlways]
-
 public class CamerAndRoomController : MonoBehaviour
 {
-    
+    [Header("list of rooms")]
     [SerializeField] private GameObject[] roomMarkers = new GameObject[2];
-    [SerializeField] private bool allWallAreSameSize = false;
     [SerializeField] private bool cameraFollowPlayer = false;
     [SerializeField] private int roomIN = 1;
+    [Header("Player info")]
     [SerializeField] private Transform player;
+    [SerializeField] private float playSpeed = 5;
+    [Header("camera bevavior controls")]
     [SerializeField] private float cameraOffSet = -10;
     [SerializeField] private float cameraOuterBoundX = 5;
     [SerializeField] private float cameraOuterBoundY = 5;
+    
 
 
     // Start is called before the first frame update
@@ -35,6 +36,7 @@ public class CamerAndRoomController : MonoBehaviour
                 if (temp.GetRoomConectedTOEast() != 0) 
                 {
                     roomMarkers[temp.GetRoomConectedTOEast() -1].GetComponent<Room>().roomConectedTOWest = i + 1;
+                    
                 }
 
                 if (temp.GetRoomConectedTOSouth() != 0)
@@ -48,13 +50,10 @@ public class CamerAndRoomController : MonoBehaviour
                 }
 
             }
-
-
+            gameObject.transform.position = roomMarkers[roomIN - 1].GetComponent<Room>().GetMiddel();
+            GetComponent<Camera>().orthographicSize = cameraOffSet;
         }
-        else 
-        {
         
-        }
     }
 
     // Update is called once per frame
@@ -62,37 +61,38 @@ public class CamerAndRoomController : MonoBehaviour
     {
 
 
-
-
-
         if (Application.IsPlaying(gameObject))
         {
             // Play logic
             Room room = roomMarkers[roomIN -1].GetComponent<Room>();
-            if (cameraFollowPlayer) 
+            if (cameraFollowPlayer)
             {
                 float x = player.position.x;
                 float y = player.position.y;
                 if (player.position.x < room.GetPoint2().position.x + cameraOuterBoundX)
-                    x = gameObject.transform.position.x;
+                    x = room.GetPoint2().position.x + cameraOuterBoundX;
                 if (player.position.x > room.GetPoint1().position.x - cameraOuterBoundX)
-                    x = gameObject.transform.position.x;
+                    x = room.GetPoint1().position.x - cameraOuterBoundX;
                 if (player.position.y > room.GetPoint2().position.y - cameraOuterBoundY)
-                    y = gameObject.transform.position.y;
-                gameObject.transform.position = new Vector3(x, y, cameraOffSet);
+                    y = room.GetPoint2().position.y - cameraOuterBoundY;
+                if (player.position.y < room.GetPoint1().position.y + cameraOuterBoundY)
+                    y = room.GetPoint1().position.y + cameraOuterBoundY;
+                gameObject.transform.position = new Vector3(x, y, -10);
             }
-            else
+            else 
             {
-                gameObject.transform.position = room.GetMiddel(cameraOffSet);
+                gameObject.transform.position = roomMarkers[roomIN - 1].GetComponent<Room>().GetMiddel();
             }
-           
-            float playSpeed = player.GetComponent<Player>().GetPlayerSpeed();
+            GetComponent<Camera>().orthographicSize = cameraOffSet;
+
+            //float playSpeed = player.GetComponent<Player>().GetPlayerSpeed();
 
             if (player.position.y > room.GetPoint2().position.y) 
             {
                 if (room.GetRoomConectedTONorth() != 0)
                 {
                     roomIN = room.GetRoomConectedTONorth();
+                   
                 }
                 else
                 { 
@@ -105,6 +105,7 @@ public class CamerAndRoomController : MonoBehaviour
                 if (room.GetRoomConectedTOSouth() != 0)
                 {
                     roomIN = room.GetRoomConectedTOSouth();
+                   
                 }
                 else
                 {
@@ -117,6 +118,7 @@ public class CamerAndRoomController : MonoBehaviour
                 if (room.GetRoomConectedTOEast() != 0)
                 {
                     roomIN = room.GetRoomConectedTOEast();
+                   
                 }
                 else
                 {
@@ -128,6 +130,7 @@ public class CamerAndRoomController : MonoBehaviour
                 if (room.GetRoomConectedTOWest() != 0)
                 {
                     roomIN = room.GetRoomConectedTOWest();
+                   
                 }
                 else
                 {
@@ -152,7 +155,7 @@ public class CamerAndRoomController : MonoBehaviour
                    
 
                    
-                    if (allWallAreSameSize)
+                    if (roomMarkers[num - 1].GetComponent<Room>().GetAllWallSameSize())
                     {
                         Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
                         p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
@@ -186,7 +189,7 @@ public class CamerAndRoomController : MonoBehaviour
                    
 
 
-                    if (allWallAreSameSize)
+                    if (roomMarkers[num - 1].GetComponent<Room>().GetAllWallSameSize())
                     {
                         Transform p2 = roomMarkers[num - 1].GetComponent<Room>().GetPoint2().transform;
                         p2.position = new Vector3(p2.position.x, temp.GetPoint2().transform.position.y);
@@ -220,7 +223,7 @@ public class CamerAndRoomController : MonoBehaviour
 
                    
 
-                    if (allWallAreSameSize)
+                    if (roomMarkers[num - 1].GetComponent<Room>().GetAllWallSameSize())
                     {
                         Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
                         p1.position = new Vector3(temp.GetPoint1().transform.position.x, p1.position.y);
@@ -255,7 +258,7 @@ public class CamerAndRoomController : MonoBehaviour
 
                     //menipulation on the y axis 
                  
-                    if (allWallAreSameSize)
+                    if (roomMarkers[num - 1].GetComponent<Room>().GetAllWallSameSize())
                     {
                         Transform p1 = roomMarkers[num - 1].GetComponent<Room>().GetPoint1().transform;
                         p1.position = new Vector3(p1.position.x, temp.GetPoint1().transform.position.y);
@@ -281,12 +284,7 @@ public class CamerAndRoomController : MonoBehaviour
                     p1x.position = new Vector3(temp.GetPoint2().transform.position.x, p1x.position.y);
 
                 }
-
-
             }
-        
         }
     }
-
-   
 }

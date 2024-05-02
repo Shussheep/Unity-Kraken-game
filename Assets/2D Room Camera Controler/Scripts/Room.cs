@@ -6,16 +6,20 @@ using UnityEditor;
 [ExecuteAlways]
 public class Room : MonoBehaviour
 {
+    [Header("Points")]
     [SerializeField] private Transform point1;
     [SerializeField] private Transform point2;
-  
-    [SerializeField] bool moveToCenter = false;
 
+    [Header("Settings")]
     [SerializeField] bool ancorToRightOrUp = true;
+    [SerializeField] bool allWallSameSize = true;
+    [Header("Direction Conections")]
     public int roomConectedTONorth = 0;
     public int roomConectedTOEast = 0;
     public int roomConectedTOSouth = 0;
     public int roomConectedTOWest = 0;
+   
+
     // Start is called before the first frame update
     void Start()
     {
@@ -28,32 +32,30 @@ public class Room : MonoBehaviour
         else 
         {
             //editor logic
+            if (PrefabUtility.IsPartOfAnyPrefab(gameObject))
             PrefabUtility.UnpackPrefabInstance(gameObject, UnityEditor.PrefabUnpackMode.Completely, UnityEditor.InteractionMode.UserAction);
         }
             
     }
-
+   
     // Update is called once per frame
     void Update()
     {
         DrawRoom(point1.position.x, point1.position.y, point2.position.x, point2.position.y);
-        if (moveToCenter) 
-        {
-             Vector3 t = GetMiddel();
-            MoveMarkerOnly(t);
-            moveToCenter = false;
-        }
+        
         if (point2.position.x > point1.position.x  )
         {
-            point1.position = new Vector3(1, point1.position.y);
-            point2.position = new Vector3(-1, point2.position.y);
-            moveToCenter = true;
+            Debug.Log("x");
+            point1.localPosition = new Vector3(1, point1.localPosition.y);
+            point2.localPosition = new Vector3(-1, point2.localPosition.y);
+            MoveToCenter();
         }
         if (point1.position.y > point2.position.y)
         {
-            point1.position = new Vector3( point1.position.x, -1);
-            point2.position = new Vector3( point2.position.x, 1);
-            moveToCenter = true;
+            Debug.Log("y");
+            point1.localPosition = new Vector3( point1.localPosition.x, -1);
+            point2.localPosition = new Vector3( point2.localPosition.x, 1);
+            MoveToCenter();
         }
 
     }
@@ -69,6 +71,11 @@ public class Room : MonoBehaviour
     {
         return point1;
     }
+    public void MoveToCenter()
+    {
+        Vector3 t = GetMiddel();
+        MoveMarkerOnly(t);
+    }
 
     public Transform GetPoint2()
     {
@@ -77,21 +84,10 @@ public class Room : MonoBehaviour
 
     public Vector3 GetMiddel()
     {
-       return new Vector3((point1.position.x + point2.position.x) / 2, (point1.position.y + point2.position.y) / 2);
+       return new Vector3((point1.position.x + point2.position.x) / 2, (point1.position.y + point2.position.y) / 2, -10);
         
            
           
-    }
-
-    public Vector3 GetMiddel(float z)
-    {
-        z = point1.position.y - point2.position.y;
-        if (point1.position.x - point2.position.x > point1.position.y - point2.position.y) 
-        {
-            z = point1.position.x - point2.position.x;
-        }
-        return new Vector3((point1.position.x + point2.position.x) / 2, (point1.position.y + point2.position.y) / 2, -Mathf.Abs(z/2));
-
     }
 
     public void MoveMarkerOnly( Vector3 NewLoc) 
@@ -103,10 +99,6 @@ public class Room : MonoBehaviour
         point1.SetParent(gameObject.transform, true);
         point2.SetParent(gameObject.transform, true);
 
-    }
-    public void MoveToCenter() 
-    {
-        moveToCenter = true;
     }
 
     public float GetHeight() 
@@ -135,4 +127,56 @@ public class Room : MonoBehaviour
         return ancorToRightOrUp;
     }
 
+    public bool GetAllWallSameSize() 
+    {
+        return allWallSameSize;
+    }
+
+    public void MakeRoomConection(int direction, int toConectTo) 
+    {
+        if (direction == 0)
+        {
+            roomConectedTONorth = toConectTo;
+        }
+        else if (direction == 1)
+        {
+            roomConectedTOEast = toConectTo;
+        }
+        else if (direction == 2)
+        {
+            roomConectedTOSouth = toConectTo;
+        }
+        else if (direction == 3)
+        {
+            roomConectedTOWest = toConectTo;
+        }
+        else 
+        {
+            Debug.Log("Error");
+        }
+    }
+}
+[CustomEditor(typeof(Room))]
+public class MyPlayerEditorAlternative : Editor
+{
+    int _selected = 0;
+    string[] _options = new string[4] { "North", "East", "South", "West" };
+    static int roomToConect = 0;
+    public override void OnInspectorGUI()
+    {
+        Room mp = (Room)target;
+
+        DrawDefaultInspector();
+        
+        this._selected = EditorGUILayout.Popup("Add Room Conection TO ", _selected, _options);
+         roomToConect = EditorGUILayout.IntField("roomToConect", roomToConect);
+        if (GUILayout.Button("Make Room Conectons"))
+        {
+            mp.MakeRoomConection(_selected, roomToConect);
+        }
+        if (GUILayout.Button("Move To Center"))
+        {
+            mp.MoveToCenter();
+        }
+    }
 }

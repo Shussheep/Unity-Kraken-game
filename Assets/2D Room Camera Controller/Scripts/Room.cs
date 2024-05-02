@@ -32,8 +32,15 @@ public class Room : MonoBehaviour
         else 
         {
             //editor logic
-            if (PrefabUtility.IsPartOfAnyPrefab(gameObject))
-            PrefabUtility.UnpackPrefabInstance(gameObject, UnityEditor.PrefabUnpackMode.Completely, UnityEditor.InteractionMode.UserAction);
+            try
+            {
+                PrefabUtility.UnpackPrefabInstance(gameObject, UnityEditor.PrefabUnpackMode.Completely, UnityEditor.InteractionMode.UserAction);
+            }
+            catch 
+            {
+            
+            }
+            
         }
             
     }
